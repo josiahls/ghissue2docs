@@ -142,3 +142,5 @@ checklink/cookies.txt
 /sensitive_info.txt
 /nbs/test_output/
 /out_project/
+/.private_token
+/mytoken.txt
