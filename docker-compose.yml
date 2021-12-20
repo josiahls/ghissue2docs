@@ -1,0 +1,55 @@
+version: "3"
+services:
+  ghissue2docs: &ghissue2docs
+    restart: unless-stopped
+    working_dir: /home/ghissue2docs_user/ghissue2docs
+    build:
+      dockerfile: ghissue2docs.Dockerfile
+      context: .
+    image: josiahls/ghissue2docs-dev:latest
+#    deploy:
+#      resources:
+#        reservations:
+#          devices:
+#          - capabilities:
+#            - gpu
+    logging:
+      driver: json-file
+      options:
+        max-size: 50m
+    stdin_open: true
+    tty: true
+    volumes:
+      - .:/home/ghissue2docs_user/ghissue2docs
+      - ~/.ssh:/home/ghissue2docs_user/.ssh:rw
+
+  notebook:
+    <<: *ghissue2docs
+    command: /bin/bash -c "pip install -e . --user && ../run_jupyter.sh"
+    ports:
+      - "8080:8080"
+      - "8081:8081"
+
+  watcher:
+    <<: *ghissue2docs
+    command: watchmedo shell-command --command nbdev_build_docs --pattern *.ipynb --recursive --drop
+    network_mode: host # for GitHub Codespaces https://github.com/features/codespaces/
+
+  jekyll:
+    restart: unless-stopped
+    working_dir: /home/ghissue2docs_user/ghissue2docs/
+    image: fastdotai/nbdev-docs:latest
+    logging:
+      driver: json-file
+      options:
+        max-size: 50m
+    stdin_open: true
+    tty: true
+    volumes:
+      - .:/home/ghissue2docs_user/ghissue2docs
+    ports:
+     - "4000:4000"
+    command: >
+     bash -c "cd docs
+     && bundle i
+     && chmod -R u+rwx . && bundle exec jekyll serve --host 0.0.0.0"

@@ -1,0 +1,7 @@
+{
+  "ghissue2docs": {
+    "Overview": "/",
+    "CLI": "cli.html",
+    "Notebook Template": "nbdev_template.html"
+  }
+}
