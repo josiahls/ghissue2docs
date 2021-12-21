@@ -10,8 +10,11 @@ entries:
       title: Overview
       url: /
     - output: web,pdf
-      title: Notebook Template
-      url: nbdev_template.html
+      title: CLI
+      url: core.html
+    - output: web,pdf
+      title: Test Documentation Issue!
+      url: I_kwDOGj3YrM5ArPed.html
     output: web
     title: ghissue2docs
   output: web
